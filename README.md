@@ -8,7 +8,7 @@ This document introduces "VectorFreed", a class of vulnerability chains that beg
 
 An SVG can include another SVG through XInclude. In the vulnerable path, librsvg starts parsing an included document while libxml2 is still expanding an entity in the outer one. If the included SVG declares an entity with the same name, librsvg replaces and frees the first entity. libxml2 still holds a pointer to it.
 
-When the included parse ends, libxml2 carries on with that old pointer. The memory may already belong to something else by then, so later writes can corrupt it. A crash is one result. In the Node.js build I tested, this also led to command execution.
+When the included parse ends, libxml2 carries on with that old pointer. The memory may already belong to something else by then, so later writes can corrupt it. A crash is one result. In other cases, this also led to command execution.
 
 ## Where it shows up
 
