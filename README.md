@@ -18,7 +18,7 @@ The Next.js route we tested accepted text instead of an SVG upload. It placed th
 
 ## Scope
 
-During this research I found several products where input can reach the same bug, and confirmed command execution in several applications. How that input reaches librsvg varies from product to product. That is why an upstream image parser bug can turn up in places that do not seem related at first; the recent [libheif case](https://vercel.com/blog/reproducing-disclosing-and-fixing-the-libheif-vulnerability-with-hacktron-and-the-maintainers) is another example. It does not mean every product using librsvg is remotely exploitable.
+During this research, I identified affected input paths in multiple downstream products and confirmed command execution in the Next.js case described above. How that input reaches librsvg varies from product to product. That is why an upstream image parser bug can turn up in places that do not seem related at first; the recent [libheif case](https://vercel.com/blog/reproducing-disclosing-and-fixing-the-libheif-vulnerability-with-hacktron-and-the-maintainers) is another example. It does not mean every product using librsvg is remotely exploitable.
 
 ## What to update
 
@@ -30,7 +30,7 @@ If you use Sharp's prebuilt binaries, check the `@img/sharp-libvips-*` package y
 
 ## PoCs and what comes next
 
-So far, I haven't found a public exploit that takes this chain all the way from crafted SVG to command execution. The bug and patches are already public, though, and with current AI tools it's fairly easy to work back to the full chain from them. Because of that, treat the exploit as already public and update affected dependencies or mitigate the input path as soon as possible.
+So far, I haven't found a public exploit that takes this chain all the way from crafted SVG to command execution. The bug and patches are already public, though, and with current AI tools it's fairly easy to work back to the full chain from them. Given that, I'd treat it as if a working exploit were public. Update affected dependencies or mitigate the input path as soon as possible.
 
 I'll publish the technical write-up and PoC in the coming weeks, with the steps from the UAF to command execution and a post-mortem covering this past month of research into the chain.
 
