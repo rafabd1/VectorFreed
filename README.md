@@ -18,7 +18,7 @@ The Next.js route we tested accepted text instead of an SVG upload. It placed th
 
 ## Scope
 
-During this research, I identified affected input paths in multiple downstream products and confirmed command execution in the Next.js case described above. How that input reaches librsvg varies from product to product. That is why an upstream image parser bug can turn up in places that do not seem related at first; the recent [libheif case](https://vercel.com/blog/reproducing-disclosing-and-fixing-the-libheif-vulnerability-with-hacktron-and-the-maintainers) is another example. It does not mean every product using librsvg is remotely exploitable.
+During this research, I identified affected input paths in multiple downstream products and confirmed command execution in several of them, including the Next.js case described above. How that input reaches librsvg varies from product to product. That is why an upstream image parser bug can turn up in places that do not seem related at first; the recent [libheif case](https://vercel.com/blog/reproducing-disclosing-and-fixing-the-libheif-vulnerability-with-hacktron-and-the-maintainers) is another example. It does not mean every product using librsvg is remotely exploitable.
 
 ## What to update
 
