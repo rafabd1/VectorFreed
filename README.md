@@ -2,7 +2,7 @@
 
 ## Abstract
 
-This document introduces "VectorFreed", a class of vulnerability chains that begin with a use-after-free I found in librsvg ([CVE-2026-96889](https://www.cve.org/CVERecord?id=CVE-2026-96889)). In a Node.js/Sharp/libvips build, this bug led to command execution. It covers the bug, the paths confirmed in applications so far, and the fixes available now.
+This document introduces "VectorFreed", a class of vulnerability chains that begin with a use-after-free I (@rafabd1) found in librsvg ([CVE-2026-96889](https://www.cve.org/CVERecord?id=CVE-2026-96889)). In a Node.js/Sharp/libvips build, this bug led to command execution. It covers the bug, the paths confirmed in applications so far, and the fixes available now.
 
 ## Details
 
