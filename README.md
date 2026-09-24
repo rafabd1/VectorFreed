@@ -32,7 +32,7 @@ If you use Sharp's prebuilt binaries, check the `@img/sharp-libvips-*` package y
 
 So far, I haven't found a public exploit that takes this chain all the way from crafted SVG to command execution. The bug and patches are already public, though, and with current AI tools it's fairly easy to work back to the full chain from them. Given that, I'd treat it as if a working exploit were public. Update affected dependencies or mitigate the input path as soon as possible.
 
-I'll publish the technical write-up and PoC in the coming weeks, with the steps from the UAF to command execution and a post-mortem covering this past month of research into the chain.
+I'll publish the technical write-up and original PoC in the coming weeks, with the steps from the UAF to command execution and a post-mortem covering this past month of research into the chain.
 
 ## References
 
