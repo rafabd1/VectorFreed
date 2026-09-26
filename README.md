@@ -22,7 +22,7 @@ During this research, I identified affected input paths in multiple downstream p
 
 ## What to update
 
-- **librsvg:** 2.63.2 has the fix, with a backport in 2.62.4. If you use an older vendor build, check whether it includes the fix. See the [librsvg advisory](https://rustsec.org/advisories/RUSTSEC-2026-0305.html).
+- **librsvg:** 2.63.2 has the fix, with backports in 2.62.4 and [2.61.5](https://gitlab.gnome.org/GNOME/librsvg/-/tags/2.61.5). If you use an older vendor build, check whether it includes the fix. See the [librsvg advisory](https://rustsec.org/advisories/RUSTSEC-2026-0305.html).
 - **Next.js:** Versions 16.2.0 through 16.3.5 are affected when an application puts attacker-controlled values into SVG content, attributes, or styles on the Node.js `ImageResponse` path. Upgrade to 16.3.6.
 - **Satori:** If you use it directly, 0.33.5 fixes the separate escaping bug used in the Next.js route.
 
