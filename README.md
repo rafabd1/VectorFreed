@@ -32,12 +32,12 @@ If you use Sharp's prebuilt binaries, check the `@img/sharp-libvips-*` package y
 
 The [UAF PoC](pocs/README.md) includes an SVG generator for several input paths and can be used to check the use-after-free at the start of the chain.
 
-So far, I haven't found a public exploit that takes this chain all the way from crafted SVG to command execution. The bug and patches are already public, though, and with current AI tools it's fairly easy to work back to the full chain from them. Given that, treat the exploit as if it were already public and update affected dependencies or mitigate the input path as soon as possible.
+The [EQSTLab Next.js RCE PoC](https://github.com/EQSTLab/CVE-2026-94545) is a working example of the full chain for its pinned Node.js/Sharp build. It generates and sends the payload automatically. A working exploit is public now, so update affected dependencies or mitigate the input path as soon as possible.
 
 > [!WARNING]
-> There is no universal RCE PoC for this chain; the payload needs to be adjusted for each target. Most public "PoCs" I've seen so far don't reproduce the actual RCE chain. Some rely on SVG `<foreignObject>` for the claimed execution, which is not the exploit path described here.
+> There is no universal RCE PoC for this chain. The EQSTLab example targets its pinned build; other targets may need different payloads. PoCs that rely on SVG `<foreignObject>` for command execution do not demonstrate the chain described here.
 
-For initial validation, the UAF PoC is more practical. I plan to publish an RCE PoC for the Next.js case (CVE-2026-94545) in a separate repository. I'll also publish the technical write-up in the coming weeks, with the steps from the UAF to command execution and a post-mortem covering this past month of research into the chain.
+For initial validation on other targets, the UAF PoC is more practical. I still plan to publish my original RCE PoC for the Next.js case (CVE-2026-94545) in a separate repository. I'll also publish the technical write-up in the coming weeks, with the steps from the UAF to command execution and a post-mortem covering this past month of research into the chain.
 
 ## References
 
