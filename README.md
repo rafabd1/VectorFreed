@@ -37,7 +37,7 @@ The [EQSTLab Next.js RCE PoC](https://github.com/EQSTLab/CVE-2026-94545) is a wo
 > [!WARNING]
 > There is no universal RCE PoC for this chain. The EQSTLab example targets its pinned build; other targets may need different payloads. PoCs that rely on SVG `<foreignObject>` for command execution do not demonstrate the chain described here.
 
-For initial validation on other targets, the UAF PoC is more practical. I still plan to publish my original RCE PoC for the Next.js case (CVE-2026-94545) in a separate repository. I'll also publish the technical write-up in the coming weeks, with the steps from the UAF to command execution and a post-mortem covering this past month of research into the chain.
+For initial validation on other targets, the UAF PoC is more practical. I'll also publish the technical write-up in the coming weeks, with the steps from the UAF to command execution and a post-mortem covering this past month of research into the chain.
 
 ## References
 
