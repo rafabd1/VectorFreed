@@ -14,16 +14,23 @@ When the included parse ends, libxml2 carries on with that old pointer. The memo
 
 The attacker needs crafted SVG markup to reach librsvg. That can happen when an application accepts an SVG file, but it can also happen when the application builds an SVG from user input. Merely using librsvg somewhere in the dependency tree does not establish an exploitable path; the input has to reach an affected build when the image is rendered.
 
+### Next.js
+
 The Next.js route we tested accepted text instead of an SVG upload. It placed that text inside an inline SVG for the Node.js version of `ImageResponse`. A [separate escaping bug in Satori](https://github.com/vercel/satori/security/advisories/GHSA-wx4j-mvgx-mqwp) let the text change the generated SVG markup. Sharp/libvips then passed that SVG to librsvg. Vercel tracked the Next.js path as [CVE-2026-94545](https://github.com/vercel/next.js/security/advisories/GHSA-vcvr-r3jv-pc5j). The Edge version of `ImageResponse` is not affected by this path. Here is a short [Next.js reproduction](https://x.com/rafabd1_/status/2102459649924727213).
+
+### Ghost
+
+Ghost has a different path. A staff user, including a Contributor, could create a bookmark card for a site they control. Processing the card image could then run commands on the Ghost server. Ghost published this as [CVE-2026-105642](https://github.com/TryGhost/Ghost/security/advisories/GHSA-788w-68h3-cvxp).
 
 ## Scope
 
-During this research, I identified affected input paths in multiple downstream products and confirmed command execution in several of them, including the Next.js case described above. How that input reaches librsvg varies from product to product. That is why an upstream image parser bug can turn up in places that do not seem related at first; the recent [libheif case](https://vercel.com/blog/reproducing-disclosing-and-fixing-the-libheif-vulnerability-with-hacktron-and-the-maintainers) is another example. It does not mean every product using librsvg is remotely exploitable.
+During this research, I identified affected input paths in multiple downstream products and confirmed command execution in several of them, including the Next.js and Ghost cases above. How that input reaches librsvg varies from product to product. That is why an upstream image parser bug can turn up in places that do not seem related at first; the recent [libheif case](https://vercel.com/blog/reproducing-disclosing-and-fixing-the-libheif-vulnerability-with-hacktron-and-the-maintainers) is another example. It does not mean every product using librsvg is remotely exploitable.
 
 ## What to update
 
 - **librsvg:** 2.63.2 has the fix, with backports in 2.62.4, [2.61.5](https://gitlab.gnome.org/GNOME/librsvg/-/tags/2.61.5), [2.60.3](https://gitlab.gnome.org/GNOME/librsvg/-/tags/2.60.3), [2.57.5](https://gitlab.gnome.org/GNOME/librsvg/-/tags/2.57.5), and [2.56.6](https://gitlab.gnome.org/GNOME/librsvg/-/tags/2.56.6). If you use an older vendor build, check whether it includes the fix. See the [librsvg advisory](https://rustsec.org/advisories/RUSTSEC-2026-0305.html).
 - **Next.js:** Versions 16.2.0 through 16.3.5 are affected when an application puts attacker-controlled values into SVG content, attributes, or styles on the Node.js `ImageResponse` path. Upgrade to 16.3.6.
+- **Ghost:** Ghost lists versions >= 6.56.0 and < 6.67.0 as affected. Upgrade to 6.67.0.
 - **Satori:** If you use it directly, 0.33.5 fixes the separate escaping bug used in the Next.js route.
 
 If you use Sharp's prebuilt binaries, check the `@img/sharp-libvips-*` package your app installed. It [bundles libvips and its dependencies](https://github.com/lovell/sharp-libvips), including [librsvg](https://github.com/lovell/sharp-libvips/blob/main/THIRD-PARTY-NOTICES.md). Updating the system copy of librsvg may leave your app using the old one.
@@ -44,5 +51,6 @@ For initial validation on other targets, the UAF PoC is more practical. I'll als
 - [librsvg issue and fix](https://gitlab.gnome.org/GNOME/librsvg/-/work_items/1241)
 - [librsvg RustSec advisory](https://rustsec.org/advisories/RUSTSEC-2026-0305.html)
 - [Next.js security update](https://nextjs.org/blog/nextjs-security-update-september-22-2026) and [Next.js advisory](https://github.com/vercel/next.js/security/advisories/GHSA-vcvr-r3jv-pc5j)
+- [Ghost advisory](https://github.com/TryGhost/Ghost/security/advisories/GHSA-788w-68h3-cvxp)
 - [Satori advisory](https://github.com/vercel/satori/security/advisories/GHSA-wx4j-mvgx-mqwp)
 - [Next.js reproduction post](https://x.com/rafabd1_/status/2102459649924727213)
