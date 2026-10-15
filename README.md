@@ -16,7 +16,15 @@ The attacker needs crafted SVG markup to reach librsvg. That can happen when an 
 
 ### Next.js
 
+#### ImageResponse
+
 The Next.js route we tested accepted text instead of an SVG upload. It placed that text inside an inline SVG for the Node.js version of `ImageResponse`. A [separate escaping bug in Satori](https://github.com/vercel/satori/security/advisories/GHSA-wx4j-mvgx-mqwp) let the text change the generated SVG markup. Sharp/libvips then passed that SVG to librsvg. Vercel tracked the Next.js path as [CVE-2026-94545](https://github.com/vercel/next.js/security/advisories/GHSA-vcvr-r3jv-pc5j). The Edge version of `ImageResponse` is not affected by this path. Here is a short [Next.js reproduction](https://x.com/rafabd1_/status/2102459649924727213).
+
+#### Image Optimization
+
+A second Next.js route reached the same librsvg bug through the Image Optimization API. When an attacker-controlled image source was accepted by the API, a crafted image could pass the framework's SVG rejection and later be handled as SVG by Sharp/libvips. This exposed the upstream memory corruption to unauthenticated requests on glibc-based Linux without using Satori or `ImageResponse`.
+
+Vercel published this route as [GHSA-2464-fhr4-w9xw](https://github.com/vercel/next.js/security/advisories/GHSA-2464-fhr4-w9xw), under the upstream CVE-2026-96889. The advisory rates it Critical with a CVSS score of 9.5.
 
 ### Ghost
 
@@ -24,12 +32,13 @@ Ghost has a different path. A staff user, including a Contributor, could create 
 
 ## Scope
 
-During this research, I identified affected input paths in multiple downstream products and confirmed command execution in several of them, including the Next.js and Ghost cases above. How that input reaches librsvg varies from product to product. That is why an upstream image parser bug can turn up in places that do not seem related at first; the recent [libheif case](https://vercel.com/blog/reproducing-disclosing-and-fixing-the-libheif-vulnerability-with-hacktron-and-the-maintainers) is another example. It does not mean every product using librsvg is remotely exploitable.
+During this research, I identified affected input paths in multiple downstream products and confirmed command execution in several of them, including both Next.js routes and the Ghost case above. How that input reaches librsvg varies from product to product. That is why an upstream image parser bug can turn up in places that do not seem related at first; the recent [libheif case](https://vercel.com/blog/reproducing-disclosing-and-fixing-the-libheif-vulnerability-with-hacktron-and-the-maintainers) is another example. It does not mean every product using librsvg is remotely exploitable.
 
 ## What to update
 
 - **librsvg:** 2.63.2 has the fix, with backports in 2.62.4, [2.61.5](https://gitlab.gnome.org/GNOME/librsvg/-/tags/2.61.5), [2.60.3](https://gitlab.gnome.org/GNOME/librsvg/-/tags/2.60.3), [2.57.5](https://gitlab.gnome.org/GNOME/librsvg/-/tags/2.57.5), and [2.56.6](https://gitlab.gnome.org/GNOME/librsvg/-/tags/2.56.6). If you use an older vendor build, check whether it includes the fix. See the [librsvg advisory](https://rustsec.org/advisories/RUSTSEC-2026-0305.html).
-- **Next.js:** Versions 16.2.0 through 16.3.5 are affected when an application puts attacker-controlled values into SVG content, attributes, or styles on the Node.js `ImageResponse` path. Upgrade to 16.3.6.
+- **Next.js (`ImageResponse`):** Versions 16.2.0 through 16.3.5 are affected when an application puts attacker-controlled values into SVG content, attributes, or styles. Upgrade to 16.3.6.
+- **Next.js (Image Optimization):** The advisory lists `>= 10.0.0 <= 15.5.27` and `> 16.0.0 <= 16.4.0` as affected. Upgrade to 15.5.28 or 16.4.1. Sharp 0.35.5 or later contains the upstream fix.
 - **Ghost:** Ghost lists versions >= 6.56.0 and < 6.67.0 as affected. Upgrade to 6.67.0.
 - **Satori:** If you use it directly, 0.33.5 fixes the separate escaping bug used in the Next.js route.
 
@@ -39,7 +48,7 @@ If you use Sharp's prebuilt binaries, check the `@img/sharp-libvips-*` package y
 
 The [UAF PoC](pocs/README.md) includes an SVG generator for several input paths and can be used to check the use-after-free at the start of the chain.
 
-The [EQSTLab Next.js RCE PoC](https://github.com/EQSTLab/CVE-2026-94545) is a working example of the full chain for its pinned Node.js/Sharp build. It generates and sends the payload automatically. A working exploit is public now, so update affected dependencies or mitigate the input path as soon as possible.
+The [EQSTLab Next.js `ImageResponse` RCE PoC](https://github.com/EQSTLab/CVE-2026-94545) is a working example of that chain for its pinned Node.js/Sharp build. It generates and sends the payload automatically. A working exploit is public now, so update affected dependencies or mitigate the input path as soon as possible.
 
 > [!WARNING]
 > There is no universal RCE PoC for this chain. The EQSTLab example targets its pinned build; other targets may need different payloads. PoCs that rely on SVG `<foreignObject>` for command execution do not demonstrate the chain described here.
@@ -50,7 +59,8 @@ For initial validation on other targets, the UAF PoC is more practical. I'll als
 
 - [librsvg issue and fix](https://gitlab.gnome.org/GNOME/librsvg/-/work_items/1241)
 - [librsvg RustSec advisory](https://rustsec.org/advisories/RUSTSEC-2026-0305.html)
-- [Next.js security update](https://nextjs.org/blog/nextjs-security-update-september-22-2026) and [Next.js advisory](https://github.com/vercel/next.js/security/advisories/GHSA-vcvr-r3jv-pc5j)
+- [Next.js `ImageResponse` security update](https://nextjs.org/blog/nextjs-security-update-september-22-2026) and [advisory](https://github.com/vercel/next.js/security/advisories/GHSA-vcvr-r3jv-pc5j)
+- [Next.js Image Optimization advisory](https://github.com/vercel/next.js/security/advisories/GHSA-2464-fhr4-w9xw)
 - [Ghost advisory](https://github.com/TryGhost/Ghost/security/advisories/GHSA-788w-68h3-cvxp)
 - [Satori advisory](https://github.com/vercel/satori/security/advisories/GHSA-wx4j-mvgx-mqwp)
 - [Next.js reproduction post](https://x.com/rafabd1_/status/2102459649924727213)
