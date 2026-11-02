@@ -53,9 +53,11 @@ The [EQSTLab Next.js `ImageResponse` RCE PoC](https://github.com/EQSTLab/CVE-202
 > [!WARNING]
 > There is no universal RCE PoC for this chain. The EQSTLab example targets its pinned build; other targets may need different payloads. PoCs that rely on SVG `<foreignObject>` for command execution do not demonstrate the chain described here.
 
-For initial validation on other targets, the UAF PoC is more practical. I'll also publish the technical write-up in the coming weeks, with the steps from the UAF to command execution and a post-mortem covering this past month of research into the chain.
+For initial validation on other targets, the UAF PoC is more practical.
 
 ## References
+
+### Advisories and primary sources
 
 - [librsvg issue and fix](https://gitlab.gnome.org/GNOME/librsvg/-/work_items/1241)
 - [librsvg RustSec advisory](https://rustsec.org/advisories/RUSTSEC-2026-0305.html)
@@ -64,3 +66,10 @@ For initial validation on other targets, the UAF PoC is more practical. I'll als
 - [Ghost advisory](https://github.com/TryGhost/Ghost/security/advisories/GHSA-788w-68h3-cvxp)
 - [Satori advisory](https://github.com/vercel/satori/security/advisories/GHSA-wx4j-mvgx-mqwp)
 - [Next.js reproduction post](https://x.com/rafabd1_/status/2102459649924727213)
+
+### Coverage and analysis
+
+- [The Hacker News: Next.js Ships Out-of-Band Patch for Two Critical RCE Flaws in Caching and SVG Processing](https://thehackernews.com/2026/10/nextjs-ships-out-of-band-patch-for-two.html#why-the-image-flaw-keeps-returning)
+- [INCIBE-CERT: Ejecución remota de código en Next.js de Vercel](https://www.incibe.es/incibe-cert/alerta-temprana/avisos/ejecucion-remota-de-codigo-en-nextjs-de-vercel)
+- [Brandefense: CVE-2026-96889 — Next.js Image RCE Explained](https://brandefense.io/knowledge-hub/vulnerabilities/cve-2026-96889/)
+- [Ostorlab: GHSA-2464-fhr4-w9xw — Unauthenticated RCE in Next.js Image Optimization](https://blog.ostorlab.co/ghsa-2464-fhr4-w9xw-nextjs-image-optimization-rce.html)
