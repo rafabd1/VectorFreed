@@ -59,6 +59,7 @@ For initial validation on other targets, the UAF PoC is more practical.
 
 ### Advisories and primary sources
 
+- [Official VectorFreed write-up](https://sybr1d.xyz/posts/vectorfreed-librsvg-rce/)
 - [librsvg issue and fix](https://gitlab.gnome.org/GNOME/librsvg/-/work_items/1241)
 - [librsvg RustSec advisory](https://rustsec.org/advisories/RUSTSEC-2026-0305.html)
 - [Next.js `ImageResponse` security update](https://nextjs.org/blog/nextjs-security-update-september-22-2026) and [advisory](https://github.com/vercel/next.js/security/advisories/GHSA-vcvr-r3jv-pc5j)
